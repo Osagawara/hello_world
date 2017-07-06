@@ -53,13 +53,13 @@ class DeCNN_Vgg16:
         elif self.trainable:
             self.relu6 = tf.nn.dropout(self.relu6, self.dropout)
 
-        self.relu6 = tf.reshape(self.relu6, shape=[-1, 7, 7, 512] )
+        self.reshape1 = tf.reshape(self.relu6, shape=[tf.shape(feature_batch)[0], 7, 7, 512])
 
         # an up-sampling layer followed with three convolution layer
         # the reverse of the conv5 layer in vgg16
         # batch*7*7*512    -->    batch*14*14*512
 
-        self.upsample5 = wwa.upsample(self.relu6, 2)
+        self.upsample5 = wwa.upsample(self.reshape1, 2)
         self.conv5_1 = self.conv_layer(self.upsample5, 512, 512, "deconv5_1")
         self.conv5_2 = self.conv_layer(self.conv5_1, 512, 512, "deconv5_2")
         self.conv5_3 = self.conv_layer(self.conv5_2, 512, 512, "deconv5_3")
@@ -68,8 +68,8 @@ class DeCNN_Vgg16:
         # batch*14*14*512    -->    batch*28*28*256
         self.upsample4 = wwa.upsample(self.conv5_3, 2)
         self.conv4_1 = self.conv_layer(self.upsample4, 512, 512, "deconv4_1")
-        self.conv4_2 = self.conv_layer(self.conv5_1, 512, 512, "deconv4_2")
-        self.conv4_3 = self.conv_layer(self.conv5_2, 512, 256, "deconv4_3")
+        self.conv4_2 = self.conv_layer(self.conv4_1, 512, 512, "deconv4_2")
+        self.conv4_3 = self.conv_layer(self.conv4_2, 512, 256, "deconv4_3")
 
         # the reverse of the conv3 layer in vgg16
         # batch*28*28*256    -->    batch*56*56*128
@@ -81,16 +81,22 @@ class DeCNN_Vgg16:
         # the reverse of the conv2 layer in vgg16
         # batch*56*56*128    -->    batch*112*112*64
 
-        self.upsamlpe2 = wwa.upsample(self.conv3_3, 2)
-        self.conv2_1 = self.conv_layer(self.upsamlpe2, 128, 128, "deconv2_1")
+        self.upsample2 = wwa.upsample(self.conv3_3, 2)
+        self.conv2_1 = self.conv_layer(self.upsample2, 128, 128, "deconv2_1")
         self.conv2_2 = self.conv_layer(self.conv2_1, 128, 64, "deconv2_2")
 
         # the reverse of the conv1 layer in vgg16
         # batch*112*112*64    -->    batch*224*224*3
 
-        self.upsamlpe1 = wwa.upsample(self.conv2_2, 2)
-        self.conv1_1 = self.conv_layer(self.upsamlpe1, 64, 64, "deconv1_1")
-        self.conv1_2 = self.conv_layer(self.conv2_1, 64, 3, "deconv1_2")
+        self.upsample1 = wwa.upsample(self.conv2_2, 2)
+        self.conv1_1 = self.conv_layer(self.upsample1, 64, 64, "deconv1_1")
+        self.conv1_2 = self.conv_layer(self.conv1_1, 64, 3, "deconv1_2")
+
+        print("upsamlpe5 shape  {}".format(self.upsample5.shape))
+        print("upsamlpe4 shape  {}".format(self.upsample4.shape))
+        print("upsamlpe3 shape  {}".format(self.upsample3.shape))
+        print("upsamlpe2 shape  {}".format(self.upsample2.shape))
+        print("upsamlpe1 shape  {}".format(self.upsample1.shape))
 
         self.data_dict = None
 
