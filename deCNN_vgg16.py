@@ -1,5 +1,4 @@
 import tensorflow as tf
-import tensorpack as tp
 import numpy as np
 import WhatWhereAutoencoder as wwa
 from functools import reduce

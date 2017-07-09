@@ -61,7 +61,7 @@ with tf.device('/gpu:0'):
         with tf.name_scope("content_vgg"):
             vgg.build(images)
 
-        for s in imageset_list[10:20]:
+        for s in imageset_list[20:40]:
             print(s)
             image_list = list(os.path.join(s, f) for f in os.listdir(s) if f.endswith('.JPEG'))
             selected_images = []
@@ -80,7 +80,7 @@ with tf.device('/gpu:0'):
             np.save(npy_path, features)
             f = open('images/selected_images_' + re.split('/', s)[-1] + ".txt",'w')
             for i in selected_images:
-                f.write(i + '/n')
+                f.write(i + '\n')
 
             f.close()
             print(npy_path + "  OK")
