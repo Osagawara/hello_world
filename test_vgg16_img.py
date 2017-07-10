@@ -61,7 +61,7 @@ with tf.device('/gpu:0'):
         with tf.name_scope("content_vgg"):
             vgg.build(images)
 
-        for s in imageset_list[20:40]:
+        for s in imageset_list:
             print(s)
             image_list = list(os.path.join(s, f) for f in os.listdir(s) if f.endswith('.JPEG'))
             selected_images = []

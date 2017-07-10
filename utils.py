@@ -3,7 +3,6 @@ import skimage.io
 import skimage.transform
 import numpy as np
 
-
 # synset = [l.strip() for l in open('synset.txt').readlines()]
 
 
